@@ -48,8 +48,7 @@ with open('20170628_access.log', 'r') as log_file:
             continue
 # ============================================================================================
 
+# Преобразование даты/времени в объект datatime
         logs_str[3] = datetime.strptime(logs_str[3], '%d/%b/%Y:%H:%M:%S %z')
-        print(logs_str[3])
-
 
 print('all =====>', all_lines, '  pic ===== >', pic, '  pic (%) ===== >', pic*100//all, '%', ' robot ===== >', robot)
