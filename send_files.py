@@ -34,8 +34,8 @@ ftp_user = "sl24ftp1"
 ftp_password = "eybrfkmysq"
 
 ''' == Log dir parameters ===============================================
- logs_dir - log file directory
- data_shift - смещение назад, в днях
+ logs_dir     - log file directory
+ data_shift   - смещение назад, в днях
  names_prefix - часть имени файла, для идентификации
 '''
 
