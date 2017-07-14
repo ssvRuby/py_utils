@@ -89,53 +89,65 @@ def close_connect_to_db(conn):
     if conn:
         conn.close()
 
-# filtered_records = get_filtered_records('20170628_access.log', True, 'prepared_log')
 
-# print('=====> Try connect to DB!')
-# if len(filtered_records) > 0:
-#     conn = connect_to_db()
-#
-#     if conn:
-#         print(conn.version.split("."))
-#         # transaction
-#         for r in filtered_records:
-#             pass  # insert
-#         # commit conn.commit()
-#         close_connect_to_db(conn)
+filtered_records = get_filtered_records('20170628_access.log', test_mode=False, test_file_name='prepared_log')
 
-# for r in filtered_records:
-#     print(r)
-# print(len(filtered_records))
+if len(filtered_records) > 0:
 
-conn = connect_to_db()
-print(conn.version.split("."))
-cursor = conn.cursor()
+    print('=====> Try connect to DB!')
+    conn = connect_to_db()
 
+    if conn:
+        print(conn.version.split("."))
 
+        try:
+            cursor = conn.cursor()
+            cursor.prepare('INSERT INTO ssv (a, b, c, d, e, f, g, h, i) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9)')
+            cursor.executemany(None, filtered_records)
+            conn.commit()
+            close_connect_to_db(conn)
 
+        except cx_Oracle.DatabaseError as ora_ex:
+            error, = ora_ex.args
+            print("Oracle-Error-Code:", error.code)
+            print("Oracle-Error-Message:", error.message)
 
 
-try:
-    insert_string = 'INSERT INTO ssv (id, status, tstamp) ' \
-                    'values (1, {}, TO_DATE({}, {}))'.format(str_to_sql('dddddd'),
-                                                             str_to_sql('01-09-1988'), str_to_sql('DD.MM.YYYY'))
-    print(insert_string)
-    cursor.prepare(insert_string)
-    print(cursor.statement)
-    cursor.execute(None)
-    conn.commit()
-    # for result in cursor:
-    #     # dddd, = result
-    #     # print('ddd ', type(dddd))
-    #     print('=====> ', type(result))
-    #     print('=====> ', result)
-    #     for r in result:
-    #         print(r)
-    #     aaa = 1
-except cx_Oracle.DatabaseError as ora_ex:
-    error, = ora_ex.args
-    print("Oracle-Error-Code:", error.code)
-    print("Oracle-Error-Message:", error.message)
+'''
+
+#--SITE TABLE -------______--------------------------------
+id                                       NUMBER         PK
+name                                     VARCHAR2(50)
 
 
-close_connect_to_db(conn)
+#--ACCESS_LOG TABLE ---------------------------------------
+id                                       NUMBER         PK
+tstamp                                   DATE
+site                                     NUMBER         FK
+#----------------------------------------------------------
+ip        ip адрес (%h)                  VARCHAR2(15)
+identity  RFC 1413 identity (%l)         VARCHAR2(100)
+userid    userid (%u)                    VARCHAR2(100)
+date      дата/время (%t)                VARCHAR2(30) 
+page      запрашиваемая страница (%r)    VARCHAR2(1500)
+code      код статуса (%>s)              VARCHAR2(3)
+size      размер (%b)                    VARCHAR2(12)
+referer   источник                       VARCHAR2(2500)
+agent     пользовательский агент         VARCHAR2(1500)
+#----------------------------------------------------------
+#----------------------------------------------------------
+
+
+CREATE SEQUENCE access_log_seq
+START WITH 1 
+INCREMENT BY 1 
+NOMAXVALUE;
+
+INSERT INTO access_log (id, name) VALUES (access_log_seq.nextval, ........');
+
+
+insert_string = 'INSERT INTO ssv (id, status, tstamp) ' \
+#                'values (1, {}, TO_DATE({}, {}))'.format(str_to_sql('dddddd'), \
+#                  str_to_sql('01-09-1988'), str_to_sql('DD.MM.YYYY'))
+'''
+
