@@ -58,6 +58,8 @@ def get_filtered_records(access_log_file_name, test_mode=False, test_file_name =
             if 'GET /bitrix/tools/public_session.php?' in logs_str[4]:
                 continue
             # ===============================================================================================
+            # TODO Добавить дополнительные поля в logs_str, в соответствии  с таблицей
+            # TODO Привести типы для записи в базу
 
             result_lst.append(logs_str)
 
@@ -102,6 +104,7 @@ if len(filtered_records) > 0:
 
         try:
             cursor = conn.cursor()
+            # TODO Добавить FK на сайт и добавить автоинкремент
             cursor.prepare('INSERT INTO ssv (a, b, c, d, e, f, g, h, i) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9)')
             cursor.executemany(None, filtered_records)
             conn.commit()
@@ -111,6 +114,11 @@ if len(filtered_records) > 0:
             error, = ora_ex.args
             print("Oracle-Error-Code:", error.code)
             print("Oracle-Error-Message:", error.message)
+
+
+
+
+
 
 
 '''
