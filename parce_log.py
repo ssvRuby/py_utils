@@ -87,10 +87,16 @@ def str_to_sql(literal):
     return '\'{}\''.format(literal)
 
 
+def connect_to_db(sysdba=False):
 
-def connect_to_db():
+    oracle_user = 'BDATA'
+    oracle_password = 'oracle'
+
     try:
-        return cx_Oracle.connect('sys/oracle@172.25.100.212/wla', mode=cx_Oracle.SYSDBA)
+        if sysdba:
+            return cx_Oracle.connect('sys/oracle@172.25.100.212/wla', mode=cx_Oracle.SYSDBA)
+        else:
+            return cx_Oracle.connect('{}/{}@172.25.100.212/wla'.format(oracle_user, oracle_password))
 
     except cx_Oracle.Error as ora_ex:
         error, = ora_ex.args
@@ -104,24 +110,35 @@ def close_connect_to_db(conn):
         conn.close()
 
 
-filtered_records = get_filtered_records('20170628_access.log', test_mode=False, test_file_name='prepared_log')
+def write_to_oracle(filtered_records):
 
-if len(filtered_records) > 0:
+    if len(filtered_records) > 0:
 
-    conn = connect_to_db()
+        conn = connect_to_db()
 
-    if conn:
+        if conn:
 
-        try:
-            cursor = conn.cursor()
-            cursor.prepare('INSERT INTO RAW_LOG (ID, IP, REQ_IDENTITY, REQ_USER_ID, REQ_DATE, REQ_PAGE, \
-                           REQ_CODE, REQ_SIZE, REQ_REFER, REQ_AGENT, T_STAMP) VALUES (RAW_LOG_SEQ.NEXTVAL, :1, :2, :3, :4, :5, :6, :7, :8, :9, :10)')
+            try:
+                cursor = conn.cursor()
+                cursor.prepare('INSERT INTO RAW_LOG (ID, IP, REQ_IDENTITY, REQ_USER_ID, REQ_DATE, REQ_PAGE, \
+                                                     REQ_CODE, REQ_SIZE, REQ_REFER, REQ_AGENT, T_STAMP)     \
+                                VALUES (RAW_LOG_SEQ.NEXTVAL, :1, :2, :3, :4, :5, :6, :7, :8, :9, :10)')
 
-            cursor.executemany(None, filtered_records)
-            conn.commit()
-            close_connect_to_db(conn)
+                cursor.executemany(None, filtered_records)
+                conn.commit()
+                close_connect_to_db(conn)
 
-        except cx_Oracle.DatabaseError as ora_ex:
-            error, = ora_ex.args
-            print("Oracle-Error-Code:", error.code)
-            print("Oracle-Error-Message:", error.message)
+            except cx_Oracle.DatabaseError as ora_ex:
+                error, = ora_ex.args
+                print("Oracle-Error-Code:", error.code)
+                print("Oracle-Error-Message:", error.message)
+
+
+def get_access_log_name():
+    pass
+
+
+log_file_name = '20170628_access.log'
+
+filtered_records = get_filtered_records(log_file_name, test_mode=False, test_file_name='prepared_log')
+write_to_oracle(filtered_records)

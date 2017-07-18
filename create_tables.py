@@ -18,25 +18,10 @@ agent     пользовательский агент         VARCHAR2(1500)
 #----------------------------------------------------------
 '''
 
-# create_table = """CREATE TABLE SYS.RAW_LOG (
-#                         ID                      NUMBER NOT NULL ENABLE,
-#                         DT                      DATE DEFAULT sysdate NOT NULL ENABLE,
-#                         TSTAMP                  DATE,
-#                         IP                      VARCHAR2(15),
-#                         REQ_IDENTITY            VARCHAR2(100),
-#                         REQ_USER_ID             VARCHAR2(100),
-#                         REQ_DATE                VARCHAR2(30),
-#                         REQ_PAGE                VARCHAR2(1500),
-#                         REQ_CODE                VARCHAR2(3),
-#                         REQ_SIZE                VARCHAR2(12),
-#                         REQ_REFER               VARCHAR2(2500),
-#                         REQ_AGENT               VARCHAR2(1500),
-#                         CONSTRAINT "RAW_LOG_PK" PRIMARY KEY ("ID")
-#                         USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255
-#                         )
-# """
+oracle_user = 'BDATA'
+oracle_password = 'oracle'
 
-create_table = """CREATE TABLE SYS.RAW_LOG (
+create_table = """CREATE TABLE RAW_LOG (
                         ID                      NUMBER NOT NULL ENABLE,
                         RECORDS_DATE            DATE DEFAULT sysdate NOT NULL ENABLE, 
                         T_STAMP                 DATE,
@@ -54,7 +39,7 @@ create_table = """CREATE TABLE SYS.RAW_LOG (
                         )
 """
 
-create_sequence = '''CREATE SEQUENCE  "SYS"."RAW_LOG_SEQ"  
+create_sequence = '''CREATE SEQUENCE  RAW_LOG_SEQ
                         MINVALUE 1 MAXVALUE 9999999999999999999999999999 
                         INCREMENT BY 1 
                         START WITH 1 
@@ -62,21 +47,23 @@ create_sequence = '''CREATE SEQUENCE  "SYS"."RAW_LOG_SEQ"
 '''
 
 
-def get_check_seq_str(sequence_name):
+def get_check_seq_str(owner, sequence_name):
     return '''SELECT count(*) FROM all_objects 
-              WHERE object_type = 'SEQUENCE' AND object_name = '{}'
-           '''.format(sequence_name)
+              WHERE object_type = 'SEQUENCE' 
+              AND object_name = '{}'
+              AND owner = '{}'
+           '''.format(sequence_name, owner)
 
 
-def get_check_table_str(table_name):
+def get_check_table_str(owner, table_name):
     return '''SELECT count(*) FROM all_objects
               WHERE object_type in ('TABLE','VIEW')
               AND object_name = '{}'
-           '''.format(table_name)
+              AND owner = '{}'
+           '''.format(table_name, owner)
 
 
 def object_exist(cursor, check_string):
-    # print(check_string)
     obj_ex = False
     result = cursor.execute(check_string).fetchone()
     if len(result) > 0:
@@ -87,13 +74,16 @@ def object_exist(cursor, check_string):
 
 try:
 
-    conn = cx_Oracle.connect('sys/oracle@172.25.100.212/wla', mode=cx_Oracle.SYSDBA)
+    #conn = cx_Oracle.connect('sys/oracle@172.25.100.212/wla', mode=cx_Oracle.SYSDBA)
+    conn = cx_Oracle.connect('{}/{}@172.25.100.212/wla'.format(oracle_user, oracle_password))
     cursor = conn.cursor()
 
-    if not object_exist(cursor, get_check_seq_str('RAW_LOG_SEQ')):
+    if  not object_exist(cursor, get_check_seq_str(oracle_user, 'RAW_LOG_SEQ')):
+        print('===========================')
+        print(create_sequence)
         cursor.execute(create_sequence)
 
-    if not object_exist(cursor, get_check_table_str('RAW_LOG')):
+    if not object_exist(cursor, get_check_table_str(oracle_user, 'RAW_LOG')):
         cursor.execute(create_table)
 
     conn.commit()
