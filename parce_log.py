@@ -125,26 +125,3 @@ if len(filtered_records) > 0:
             error, = ora_ex.args
             print("Oracle-Error-Code:", error.code)
             print("Oracle-Error-Message:", error.message)
-
-
-'''
-
-#--RAW_LOG TABLE ---------------------------------------
-id                                       NUMBER         PK
-tstamp                                   DATE
-site                                     NUMBER         FK
-#----------------------------------------------------------
-ip        ip адрес (%h)                  VARCHAR2(15)
-identity  RFC 1413 identity (%l)         VARCHAR2(100)
-userid    userid (%u)                    VARCHAR2(100)
-date      дата/время (%t)                VARCHAR2(30) 
-page      запрашиваемая страница (%r)    VARCHAR2(1500)
-code      код статуса (%>s)              VARCHAR2(3)
-size      размер (%b)                    VARCHAR2(12)
-referer   источник                       VARCHAR2(2500)
-agent     пользовательский агент         VARCHAR2(1500)
-#----------------------------------------------------------
-#----------------------------------------------------------
-
-'''
-
