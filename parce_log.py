@@ -33,6 +33,11 @@ agent     пользовательский агент         VARCHAR2(1500)
 '''
 
 
+oracle_user_name = 'BDATA'
+oracle_user_password = 'oracle'
+oracle_ip = '172.25.100.212'
+oracle_sid = 'wla'
+
 def get_filtered_records(access_log_file_name, test_mode=False, test_file_name = ''):
 
     result_lst = []
@@ -89,14 +94,11 @@ def str_to_sql(literal):
 
 def connect_to_db(sysdba=False):
 
-    oracle_user = 'BDATA'
-    oracle_password = 'oracle'
-
     try:
         if sysdba:
             return cx_Oracle.connect('sys/oracle@172.25.100.212/wla', mode=cx_Oracle.SYSDBA)
         else:
-            return cx_Oracle.connect('{}/{}@172.25.100.212/wla'.format(oracle_user, oracle_password))
+            return cx_Oracle.connect('{}/{}@{}/{}'.format(oracle_user_name, oracle_user_password, oracle_ip, oracle_sid))
 
     except cx_Oracle.Error as ora_ex:
         error, = ora_ex.args

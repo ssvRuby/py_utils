@@ -18,8 +18,10 @@ agent     пользовательский агент         VARCHAR2(1500)
 #----------------------------------------------------------
 '''
 
-oracle_user = 'BDATA'
-oracle_password = 'oracle'
+oracle_user_name = 'BDATA'
+oracle_user_password = 'oracle'
+oracle_ip = '172.25.100.212'
+oracle_sid = 'wla'
 
 create_table = """CREATE TABLE RAW_LOG (
                         ID                      NUMBER NOT NULL ENABLE,
@@ -74,16 +76,13 @@ def object_exist(cursor, check_string):
 
 try:
 
-    #conn = cx_Oracle.connect('sys/oracle@172.25.100.212/wla', mode=cx_Oracle.SYSDBA)
-    conn = cx_Oracle.connect('{}/{}@172.25.100.212/wla'.format(oracle_user, oracle_password))
+    conn = cx_Oracle.connect('{}/{}@{}/{}'.format(oracle_user_name, oracle_user_password, oracle_ip, oracle_sid))
     cursor = conn.cursor()
 
-    if  not object_exist(cursor, get_check_seq_str(oracle_user, 'RAW_LOG_SEQ')):
-        print('===========================')
-        print(create_sequence)
+    if not object_exist(cursor, get_check_seq_str(oracle_user_name, 'RAW_LOG_SEQ')):
         cursor.execute(create_sequence)
 
-    if not object_exist(cursor, get_check_table_str(oracle_user, 'RAW_LOG')):
+    if not object_exist(cursor, get_check_table_str(oracle_user_name, 'RAW_LOG')):
         cursor.execute(create_table)
 
     conn.commit()
