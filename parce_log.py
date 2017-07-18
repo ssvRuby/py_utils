@@ -1,6 +1,5 @@
 import re
 import cx_Oracle
-
 from datetime import datetime
 
 '''
@@ -14,9 +13,23 @@ from datetime import datetime
    которые был запрошены и их порядок просмотра. 
 
 
-  # Преобразование даты/времени в объект datatime
-                    # logs_str[3] = datetime.strptime(logs_str[3], '%d/%b/%Y:%H:%M:%S %z')
-                    # 20170628_access.log
+#--RAW_LOG TABLE ---------------------------------------
+id                                       NUMBER         PK
+tstamp                                   DATE
+site                                     NUMBER         FK
+#----------------------------------------------------------
+ip        ip адрес (%h)                  VARCHAR2(15)
+identity  RFC 1413 identity (%l)         VARCHAR2(100)
+userid    userid (%u)                    VARCHAR2(100)
+date      дата/время (%t)                VARCHAR2(30) 
+page      запрашиваемая страница (%r)    VARCHAR2(1500)
+code      код статуса (%>s)              VARCHAR2(3)
+size      размер (%b)                    VARCHAR2(12)
+referer   источник                       VARCHAR2(2500)
+agent     пользовательский агент         VARCHAR2(1500)
+#----------------------------------------------------------
+#----------------------------------------------------------
+
 '''
 
 
@@ -114,19 +127,9 @@ if len(filtered_records) > 0:
             print("Oracle-Error-Message:", error.message)
 
 
-
-
-
-
-
 '''
 
-#--SITE TABLE -------______--------------------------------
-id                                       NUMBER         PK
-name                                     VARCHAR2(50)
-
-
-#--ACCESS_LOG TABLE ---------------------------------------
+#--RAW_LOG TABLE ---------------------------------------
 id                                       NUMBER         PK
 tstamp                                   DATE
 site                                     NUMBER         FK
@@ -142,29 +145,6 @@ referer   источник                       VARCHAR2(2500)
 agent     пользовательский агент         VARCHAR2(1500)
 #----------------------------------------------------------
 #----------------------------------------------------------
-
-
-CREATE SEQUENCE access_log_seq
-START WITH 1 
-INCREMENT BY 1 
-NOMAXVALUE;
-
-INSERT INTO access_log (id, name) VALUES (access_log_seq.nextval, ........');
-
-
-insert_string = 'INSERT INTO ssv (id, status, tstamp) ' \
-#                'values (1, {}, TO_DATE({}, {}))'.format(str_to_sql('dddddd'), \
-#                  str_to_sql('01-09-1988'), str_to_sql('DD.MM.YYYY'))
-
-
-select count(*)
-from all_objects
-where object_type in ('TABLE','VIEW')
-and object_name = 'your_table_name';
-
-SEQUENCE
-
- cursor.execute('INSERT INTO raw_log (id, TSTAMP) VALUES (RAW_LOG_SEQ.NEXTVAL, SYSDATE)')
 
 '''
 
