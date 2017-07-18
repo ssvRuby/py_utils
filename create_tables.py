@@ -18,10 +18,28 @@ agent     пользовательский агент         VARCHAR2(1500)
 #----------------------------------------------------------
 '''
 
+# create_table = """CREATE TABLE SYS.RAW_LOG (
+#                         ID                      NUMBER NOT NULL ENABLE,
+#                         DT                      DATE DEFAULT sysdate NOT NULL ENABLE,
+#                         TSTAMP                  DATE,
+#                         IP                      VARCHAR2(15),
+#                         REQ_IDENTITY            VARCHAR2(100),
+#                         REQ_USER_ID             VARCHAR2(100),
+#                         REQ_DATE                VARCHAR2(30),
+#                         REQ_PAGE                VARCHAR2(1500),
+#                         REQ_CODE                VARCHAR2(3),
+#                         REQ_SIZE                VARCHAR2(12),
+#                         REQ_REFER               VARCHAR2(2500),
+#                         REQ_AGENT               VARCHAR2(1500),
+#                         CONSTRAINT "RAW_LOG_PK" PRIMARY KEY ("ID")
+#                         USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255
+#                         )
+# """
+
 create_table = """CREATE TABLE SYS.RAW_LOG (
                         ID                      NUMBER NOT NULL ENABLE,
-                        DT                      DATE DEFAULT sysdate NOT NULL ENABLE,
-                        TSTAMP                  DATE, 
+                        RECORDS_DATE            DATE DEFAULT sysdate NOT NULL ENABLE, 
+                        T_STAMP                 DATE,
                         IP                      VARCHAR2(15),
                         REQ_IDENTITY            VARCHAR2(100),
                         REQ_USER_ID             VARCHAR2(100),

@@ -58,9 +58,8 @@ def get_filtered_records(access_log_file_name, test_mode=False, test_file_name =
             if 'GET /bitrix/tools/public_session.php?' in logs_str[4]:
                 continue
             # ===============================================================================================
-            # TODO Добавить дополнительные поля в logs_str, в соответствии  с таблицей
-            # TODO Привести типы для записи в базу
 
+            logs_str.append(datetime.strptime(logs_str[3], '%d/%b/%Y:%H:%M:%S %z'))
             result_lst.append(logs_str)
 
     if test_mode:
@@ -96,16 +95,15 @@ filtered_records = get_filtered_records('20170628_access.log', test_mode=False, 
 
 if len(filtered_records) > 0:
 
-    print('=====> Try connect to DB!')
     conn = connect_to_db()
 
     if conn:
-        print(conn.version.split("."))
 
         try:
             cursor = conn.cursor()
-            # TODO Добавить FK на сайт и добавить автоинкремент
-            cursor.prepare('INSERT INTO ssv (a, b, c, d, e, f, g, h, i) VALUES (:1, :2, :3, :4, :5, :6, :7, :8, :9)')
+            cursor.prepare('INSERT INTO RAW_LOG (ID, IP, REQ_IDENTITY, REQ_USER_ID, REQ_DATE, REQ_PAGE, \
+                           REQ_CODE, REQ_SIZE, REQ_REFER, REQ_AGENT, T_STAMP) VALUES (RAW_LOG_SEQ.NEXTVAL, :1, :2, :3, :4, :5, :6, :7, :8, :9, :10)')
+
             cursor.executemany(None, filtered_records)
             conn.commit()
             close_connect_to_db(conn)
