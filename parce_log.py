@@ -157,5 +157,16 @@ INSERT INTO access_log (id, name) VALUES (access_log_seq.nextval, ........');
 insert_string = 'INSERT INTO ssv (id, status, tstamp) ' \
 #                'values (1, {}, TO_DATE({}, {}))'.format(str_to_sql('dddddd'), \
 #                  str_to_sql('01-09-1988'), str_to_sql('DD.MM.YYYY'))
+
+
+select count(*)
+from all_objects
+where object_type in ('TABLE','VIEW')
+and object_name = 'your_table_name';
+
+SEQUENCE
+
+ cursor.execute('INSERT INTO raw_log (id, TSTAMP) VALUES (RAW_LOG_SEQ.NEXTVAL, SYSDATE)')
+
 '''
 
