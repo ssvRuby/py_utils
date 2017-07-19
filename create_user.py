@@ -1,8 +1,8 @@
 import cx_Oracle
 
-oracle_user_name = 'test'
-oracle_user_password = 'test'
-oracle_ip = '172.25.100.212'
+oracle_user_name = 'BDATA'
+oracle_user_password = 'oracle'
+oracle_ip = '10.0.0.94'
 oracle_sid = 'wla'
 
 create_user_clause = 'CREATE USER {} IDENTIFIED BY {} DEFAULT TABLESPACE \
@@ -27,6 +27,8 @@ clause_list = [create_user_clause,
                 'GRANT DROP PROFILE TO {}'.format(oracle_user_name),
                 'GRANT CREATE SESSION TO {}'.format(oracle_user_name)
                ]
+
+                # ALTER USER BDATA quota unlimited on USERS;
 try:
 
     conn = cx_Oracle.connect('sys/oracle@{}/{}'.format(oracle_ip, oracle_sid), mode=cx_Oracle.SYSDBA)

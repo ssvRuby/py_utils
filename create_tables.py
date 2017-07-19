@@ -20,7 +20,7 @@ agent     пользовательский агент         VARCHAR2(1500)
 
 oracle_user_name = 'BDATA'
 oracle_user_password = 'oracle'
-oracle_ip = '172.25.100.212'
+oracle_ip = '10.0.0.94'
 oracle_sid = 'wla'
 
 create_table = """CREATE TABLE RAW_LOG (

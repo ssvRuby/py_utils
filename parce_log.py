@@ -136,9 +136,6 @@ def write_to_oracle(filtered_records):
                 print("Oracle-Error-Message:", error.message)
 
 
-def get_access_log_name():
-    pass
-
 
 log_file_name = '20170628_access.log'
 
