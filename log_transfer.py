@@ -8,7 +8,7 @@ import cx_Oracle
 from datetime import datetime as dt
 
 '''
-VERSION 1.0
+VERSION 1.0.0 
 
 '''
 
