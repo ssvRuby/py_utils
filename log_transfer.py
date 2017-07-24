@@ -8,7 +8,7 @@ import cx_Oracle
 from datetime import datetime as dt
 
 '''
-VERSION 1.0.0 
+VERSION 1.0.1 
 
 '''
 
@@ -61,7 +61,7 @@ def get_filtered_records(access_log_file_name, test_mode=False, test_file_name='
             # =========== Фильтры =============================================================================
             # Картинки:
             if '.gif' in logs_str[4] or '.jpeg' in logs_str[4] or '.js' in logs_str[4] \
-                    or '.ico' in logs_str[4] or '.png' in logs_str[4] or '.css' in logs_str[4] \
+                    or '.ico' in logs_str[4] or '.png' in logs_str[4] or '.PNG' in logs_str[4] or '.css' in logs_str[4]\
                     or '.jpg' in logs_str[4] or '.JPG' in logs_str[4] or 'vtb24.fonts' in logs_str[4] \
                     or '/autodiscover' in logs_str[4] or '/bitrix/admin' in logs_str[4]:
                 continue
@@ -69,10 +69,11 @@ def get_filtered_records(access_log_file_name, test_mode=False, test_file_name='
                     or '.ico' in logs_str[7] or '.png' in logs_str[7] or '.css' in logs_str[7] \
                     or '.jpg' in logs_str[7] or logs_str[7] == '-':
                 continue
-            # оботы, боты:
+            # Роботы, боты:
             if '+http' in logs_str[8] or 'robot' in logs_str[8] or 'Riddler' in logs_str[8] \
                     or 'Bot' in logs_str[8] or 'bot' in logs_str[8] or 'bots' in logs_str[8] \
-                    or 'http://dsp.cubo.ru/' in logs_str[7]:
+                    or 'http://dsp.cubo.ru/' in logs_str[7] \
+                    or 'vbseocp.php' in logs_str[4] or 'insert-php' in logs_str[4]:     # Это злобный бот
                 continue
             if logs_str[5] == '499' and logs_str[6] == '0':
                 continue
@@ -85,7 +86,19 @@ def get_filtered_records(access_log_file_name, test_mode=False, test_file_name='
             if 'cubo&utm' in logs_str[4] or 'cubo&utm' in logs_str[7]:
                 continue
             # Какая-то оставшаяся хуйня
-            if 'GET /bitrix/tools/public_session.php?' in logs_str[4]:
+            if 'GET /bitrix/tools/public_session.php?' in logs_str[4] \
+                    or 'GET /bitrix/spread.php?s' in logs_str[4] \
+                    or 'GET /bitrix/spread.php?s' in logs_str[4] \
+                    or 'GET /request/success/?'   in logs_str[4] \
+                    or '/robot' in logs_str[4] \
+                    or 'logo_img.php' in logs_str[4] \
+                    or 'GET /?back_url_admin' in logs_str[4] \
+                    or 'Style HTTP/1.1' in logs_str[4] \
+                    or 'insert-php' in logs_str[4] \
+                    or 'system_info.php' in logs_str[4] \
+                    or logs_str[4] == 'GET / HTTP/1.1' \
+                    or logs_str[4] == 'GET / HTTP/1.0' \
+                    or logs_str[4] == 'HEAD / HTTP/1.1':
                 continue
             # ===============================================================================================
 
